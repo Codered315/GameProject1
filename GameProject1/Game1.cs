@@ -8,6 +8,10 @@ namespace GameProject1
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Disc disc;
+        private Texture2D basket;
+
+        private InputManager inputManager;
 
         public Game1()
         {
@@ -19,7 +23,9 @@ namespace GameProject1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            disc = new Disc(this) { Position = new Vector2(250, 250) };
 
+            inputManager = new InputManager();
             base.Initialize();
         }
 
@@ -28,12 +34,17 @@ namespace GameProject1
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            basket = Content.Load<Texture2D>("DiscBasket");
+            disc.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            inputManager.Update(gameTime);
+
+            if (inputManager.Exit) Exit();
+
+            disc.Position += inputManager.Direction;
 
             // TODO: Add your update logic here
 
@@ -42,10 +53,13 @@ namespace GameProject1
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.ForestGreen);
 
             // TODO: Add your drawing code here
-
+            _spriteBatch.Begin();
+            disc.Draw(_spriteBatch);
+            _spriteBatch.Draw(basket, new Vector2(400, 200), Color.White);
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }
