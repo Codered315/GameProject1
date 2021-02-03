@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using CollisionExample.Collisions;
 
 namespace GameProject1
 {
@@ -11,17 +12,28 @@ namespace GameProject1
         /// <summary>
         /// The game this disc is apart of
         /// </summary>
-        Game game;
+        private Game game;
 
         /// <summary>
         /// The texture to be applied to the disc
         /// </summary>
-        Texture2D texture;
+        private Texture2D texture;
+
+        private InputManager inputManager;
+
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(250 +  5,250 + 25), 53, 12);
 
         /// <summary>
         /// The position of the disc on the screen
         /// </summary>
-        public Vector2 Position { get; set;}
+        private Vector2 position = new Vector2(250, 250);
+
+        /// <summary>
+        /// The color of the sprite
+        /// </summary>
+        public Color Color { get; set; } = Color.White;
+
+        public BoundingRectangle Bounds => bounds;
 
         /// <summary>
         /// Constructor for the Disc instance 
@@ -38,6 +50,16 @@ namespace GameProject1
         public void LoadContent()
         {
             texture = game.Content.Load<Texture2D>("DiscPixel");
+            inputManager = new InputManager();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            inputManager.Update(gameTime);
+            position += inputManager.Direction;
+
+            bounds.X = position.X + 5;
+            bounds.Y = position.Y + 25;
         }
 
         /// <summary>
@@ -47,7 +69,7 @@ namespace GameProject1
         public void Draw(SpriteBatch spriteBatch)
         {
             if (texture is null) throw new InvalidOperationException("Texture must be loaded to render");
-            spriteBatch.Draw(texture, Position, Color.White);
+            spriteBatch.Draw(texture, position, Color);
         }
     }
 }

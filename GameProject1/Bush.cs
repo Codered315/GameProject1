@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using CollisionExample.Collisions;
 
 namespace GameProject1
 {
@@ -20,12 +21,30 @@ namespace GameProject1
 
         private double directionTimer;
 
+        private BoundingRectangle bounds;
+
         public Direction Direction;
 
         public Vector2 Position;
 
         public bool Is_Vertical;
 
+        public BoundingRectangle Bounds => bounds;
+
+        public Bush(Vector2 position, Direction dir, bool is_vert)
+        {
+            this.Position = position;
+            this.Direction = dir;
+            this.Is_Vertical = is_vert;
+            if (is_vert)
+            {
+                this.bounds = new BoundingRectangle(Position, 38, 110);
+            }
+            else
+            {
+                this.bounds = new BoundingRectangle(Position, 127, 51);
+            }
+        }
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("trees");
@@ -79,6 +98,8 @@ namespace GameProject1
                     Position += new Vector2(1, 0) * 150 * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     break;
             }
+            bounds.X = Position.X;
+            bounds.Y = Position.Y;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

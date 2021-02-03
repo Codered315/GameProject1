@@ -16,6 +16,10 @@ namespace GameProject1
 
         private InputManager inputManager;
 
+        private SpriteFont font;
+
+        private bool is_collided = false;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -30,18 +34,18 @@ namespace GameProject1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            disc = new Disc(this) { Position = new Vector2(250, 250) };
+            disc = new Disc(this);
 
             bushes = new Bush[]
             {
-                new Bush(){Position = new Vector2(50,0), Direction = Direction.Down, Is_Vertical = true},
-                new Bush(){Position = new Vector2(1200,1000), Direction = Direction.Right, Is_Vertical = false},
-                new Bush(){Position = new Vector2(1700,400), Direction = Direction.Left, Is_Vertical = false},
-                new Bush(){Position = new Vector2(350,700), Direction = Direction.Up, Is_Vertical = true},
-                new Bush(){Position = new Vector2(250,1000), Direction = Direction.Right, Is_Vertical = false},
-                new Bush(){Position = new Vector2(600,125), Direction = Direction.Right, Is_Vertical = false},
-                new Bush(){Position = new Vector2(725,450), Direction = Direction.Up, Is_Vertical = true},
-                new Bush(){Position = new Vector2(1125,350), Direction = Direction.Down, Is_Vertical = true}
+                new Bush(new Vector2(50,0), Direction.Down, true),
+                new Bush(new Vector2(1200,1000), Direction.Right, false),
+                new Bush(new Vector2(1700,400), Direction.Left, false),
+                new Bush(new Vector2(350,700), Direction.Up, true),
+                new Bush(new Vector2(250,1000), Direction.Right, false),
+                new Bush(new Vector2(600,125), Direction.Right, false),
+                new Bush(new Vector2(725,450), Direction.Up, true),
+                new Bush(new Vector2(1125,350), Direction.Down, true)
             };
             inputManager = new InputManager();
             base.Initialize();
@@ -56,6 +60,7 @@ namespace GameProject1
             trees_tile = Content.Load<Texture2D>("trees");
             foreach (Bush bush in bushes) bush.LoadContent(Content);
             disc.LoadContent();
+            font = Content.Load<SpriteFont>("GoudyStout");
         }
 
         protected override void Update(GameTime gameTime)
@@ -64,11 +69,20 @@ namespace GameProject1
 
             if (inputManager.Exit) Exit();
 
-            disc.Position += inputManager.Direction;
+            disc.Update(gameTime);
+            disc.Color = Color.White;
 
-            foreach (Bush bush in bushes) bush.Update(gameTime);
+            is_collided = false;
+            foreach (Bush bush in bushes)
+            {
+                bush.Update(gameTime);
+                if(bush.Bounds.CollidesWith(disc.Bounds))
+                {
+                    disc.Color = Color.Red;
+                    is_collided = true;
+                }
+            }
             // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -92,7 +106,7 @@ namespace GameProject1
             _spriteBatch.Begin();
             disc.Draw(_spriteBatch);
             foreach (Bush bush in bushes) bush.Draw(gameTime, _spriteBatch);
-            //_spriteBatch.Draw(basket, new Vector2(400, 200), Color.White);
+            _spriteBatch.Draw(basket, new Vector2(1750, height/2), Color.White);
 
             _spriteBatch.Draw(trees_tile, new Vector2(width / 2, height / 2), tall_green_tree, Color.White);
             _spriteBatch.Draw(trees_tile, new Vector2(200, 25), tall_green_tree, Color.White);
@@ -110,6 +124,8 @@ namespace GameProject1
             _spriteBatch.Draw(trees_tile, new Vector2(1500, 225), dead_tree, Color.White);
             _spriteBatch.Draw(trees_tile, new Vector2(75, 700), dead_tree, Color.White);
             _spriteBatch.Draw(trees_tile, new Vector2(1250, 625), normal_green_tree, Color.White);
+
+            if (is_collided) _spriteBatch.DrawString(font, "BONK!", new Vector2(800, 500), Color.Red);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

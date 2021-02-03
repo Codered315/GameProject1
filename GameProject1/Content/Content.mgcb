@@ -49,6 +49,13 @@
 /processorParam:TextureFormat=Color
 /build:DiscPixel.png
 
+#begin GoudyStout.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:GoudyStout.spritefont
+
 #begin trees.png
 /importer:TextureImporter
 /processor:TextureProcessor
