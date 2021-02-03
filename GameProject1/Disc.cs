@@ -37,7 +37,7 @@ namespace GameProject1
         /// </summary>
         public void LoadContent()
         {
-            texture = game.Content.Load<Texture2D>("disc");
+            texture = game.Content.Load<Texture2D>("DiscPixel");
         }
 
         /// <summary>

@@ -40,24 +40,24 @@ namespace GameProject1
 
             #region Direction Input
             //Get position from GamePad, modified this slightly to flip the analog stick directions to what I am use to
-            Direction = new Vector2(currentGamePadState.ThumbSticks.Right.X, currentGamePadState.ThumbSticks.Right.Y * -1) * 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Direction = new Vector2(currentGamePadState.ThumbSticks.Right.X, currentGamePadState.ThumbSticks.Right.Y * -1) * 200 * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //Get position from Keyboard
             if (currentKeyboardState.IsKeyDown(Keys.Left) || currentKeyboardState.IsKeyDown(Keys.A))
             {
-                Direction += new Vector2(-100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
+                Direction += new Vector2(-200 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
             }
             if (currentKeyboardState.IsKeyDown(Keys.Right) || currentKeyboardState.IsKeyDown(Keys.D))
             {
-                Direction += new Vector2(100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
+                Direction += new Vector2(200 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
             }
             if (currentKeyboardState.IsKeyDown(Keys.Up) || currentKeyboardState.IsKeyDown(Keys.W))
             {
-                Direction += new Vector2(0, -100 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                Direction += new Vector2(0, -200 * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             if (currentKeyboardState.IsKeyDown(Keys.Down) || currentKeyboardState.IsKeyDown(Keys.S))
             {
-                Direction += new Vector2(0, 100 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                Direction += new Vector2(0, 200 * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
             #endregion
 

@@ -10,13 +10,20 @@ namespace GameProject1
         private SpriteBatch _spriteBatch;
         private Disc disc;
         private Texture2D basket;
+        private Texture2D trees_tile;
+
+        private Bush[] bushes;
 
         private InputManager inputManager;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = 1920;
+            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
+            Window.AllowUserResizing = true;
             IsMouseVisible = true;
         }
 
@@ -25,6 +32,17 @@ namespace GameProject1
             // TODO: Add your initialization logic here
             disc = new Disc(this) { Position = new Vector2(250, 250) };
 
+            bushes = new Bush[]
+            {
+                new Bush(){Position = new Vector2(50,0), Direction = Direction.Down, Is_Vertical = true},
+                new Bush(){Position = new Vector2(1200,1000), Direction = Direction.Right, Is_Vertical = false},
+                new Bush(){Position = new Vector2(1700,400), Direction = Direction.Left, Is_Vertical = false},
+                new Bush(){Position = new Vector2(350,700), Direction = Direction.Up, Is_Vertical = true},
+                new Bush(){Position = new Vector2(250,1000), Direction = Direction.Right, Is_Vertical = false},
+                new Bush(){Position = new Vector2(600,125), Direction = Direction.Right, Is_Vertical = false},
+                new Bush(){Position = new Vector2(725,450), Direction = Direction.Up, Is_Vertical = true},
+                new Bush(){Position = new Vector2(1125,350), Direction = Direction.Down, Is_Vertical = true}
+            };
             inputManager = new InputManager();
             base.Initialize();
         }
@@ -35,6 +53,8 @@ namespace GameProject1
 
             // TODO: use this.Content to load your game content here
             basket = Content.Load<Texture2D>("DiscBasket");
+            trees_tile = Content.Load<Texture2D>("trees");
+            foreach (Bush bush in bushes) bush.LoadContent(Content);
             disc.LoadContent();
         }
 
@@ -46,6 +66,7 @@ namespace GameProject1
 
             disc.Position += inputManager.Direction;
 
+            foreach (Bush bush in bushes) bush.Update(gameTime);
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -55,10 +76,40 @@ namespace GameProject1
         {
             GraphicsDevice.Clear(Color.ForestGreen);
 
+            //Get the width and height of viewport for spawning sprites
+            int width = GraphicsDevice.Viewport.Width;
+            int height = GraphicsDevice.Viewport.Height;
+
+            //These are source rectangles for each sprite on the tree sheet
+            Rectangle tall_green_tree = new Rectangle(0, 0, 64, 153);
+            Rectangle normal_green_tree = new Rectangle(127, 286, 98, 130);
+            Rectangle normal_brown_tree = new Rectangle(225, 292, 94, 117);
+            Rectangle pink_tree = new Rectangle(189, 0, 98, 131);
+            Rectangle stump = new Rectangle(355, 71, 56, 48);
+            Rectangle dead_tree = new Rectangle(4, 193, 90, 95);
+
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
             disc.Draw(_spriteBatch);
-            _spriteBatch.Draw(basket, new Vector2(400, 200), Color.White);
+            foreach (Bush bush in bushes) bush.Draw(gameTime, _spriteBatch);
+            //_spriteBatch.Draw(basket, new Vector2(400, 200), Color.White);
+
+            _spriteBatch.Draw(trees_tile, new Vector2(width / 2, height / 2), tall_green_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(200, 25), tall_green_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(700, 700), tall_green_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(960, 200), stump, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(375, 175), stump, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(1150, 150), normal_green_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(200, 400), normal_green_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(1000, 800), pink_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(600, 400), pink_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(1800, 50), pink_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(1600, 700), normal_brown_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(150, 850), normal_brown_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(575, 700), stump, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(1500, 225), dead_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(75, 700), dead_tree, Color.White);
+            _spriteBatch.Draw(trees_tile, new Vector2(1250, 625), normal_green_tree, Color.White);
             _spriteBatch.End();
             base.Draw(gameTime);
         }
