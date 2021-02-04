@@ -9,23 +9,14 @@ namespace GameProject1
 {
     public class Disc
     {
-        /// <summary>
-        /// The game this disc is apart of
-        /// </summary>
         private Game game;
 
-        /// <summary>
-        /// The texture to be applied to the disc
-        /// </summary>
         private Texture2D texture;
 
         private InputManager inputManager;
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(250 +  5,250 + 25), 53, 12);
 
-        /// <summary>
-        /// The position of the disc on the screen
-        /// </summary>
         private Vector2 position = new Vector2(250, 250);
 
         /// <summary>
@@ -33,7 +24,15 @@ namespace GameProject1
         /// </summary>
         public Color Color { get; set; } = Color.White;
 
+        /// <summary>
+        /// The bounding rectangle for the disc
+        /// </summary>
         public BoundingRectangle Bounds => bounds;
+
+        /// <summary>
+        /// The position of the disc
+        /// </summary>
+        public Vector2 Position { get => position; set => position = value; }
 
         /// <summary>
         /// Constructor for the Disc instance 

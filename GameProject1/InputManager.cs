@@ -25,6 +25,11 @@ namespace GameProject1
         /// If the user has requested the game end
         /// </summary>
         public bool Exit { get; private set; } = false;
+
+        /// <summary>
+        /// Provides input updates for various sprites
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             #region Updating Input State
@@ -40,7 +45,7 @@ namespace GameProject1
 
             #region Direction Input
             //Get position from GamePad, modified this slightly to flip the analog stick directions to what I am use to
-            Direction = new Vector2(currentGamePadState.ThumbSticks.Right.X, currentGamePadState.ThumbSticks.Right.Y * -1) * 200 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Direction = new Vector2(currentGamePadState.ThumbSticks.Left.X, currentGamePadState.ThumbSticks.Left.Y * -1) * 250 * (currentGamePadState.Triggers.Right + 1) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //Get position from Keyboard
             if (currentKeyboardState.IsKeyDown(Keys.Left) || currentKeyboardState.IsKeyDown(Keys.A))

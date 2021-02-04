@@ -8,6 +8,9 @@ using CollisionExample.Collisions;
 
 namespace GameProject1
 {
+    /// <summary>
+    /// Enum of the possible bush directions
+    /// </summary>
     public enum Direction
     {
         Down = 0,
@@ -23,14 +26,32 @@ namespace GameProject1
 
         private BoundingRectangle bounds;
 
+        /// <summary>
+        /// The current direction of the bush obstacle
+        /// </summary>
         public Direction Direction;
 
+        /// <summary>
+        /// The current position of the bush
+        /// </summary>
         public Vector2 Position;
 
+        /// <summary>
+        /// Determines if the bush should be vertical or horizontal on screen
+        /// </summary>
         public bool Is_Vertical;
 
+        /// <summary>
+        /// The bounds of the bush
+        /// </summary>
         public BoundingRectangle Bounds => bounds;
 
+        /// <summary>
+        /// Bush constructor 
+        /// </summary>
+        /// <param name="position">Position on screen</param>
+        /// <param name="dir">direction to go</param>
+        /// <param name="is_vert">Is it a vertical or horizontal bush</param>
         public Bush(Vector2 position, Direction dir, bool is_vert)
         {
             this.Position = position;
@@ -45,11 +66,20 @@ namespace GameProject1
                 this.bounds = new BoundingRectangle(Position, 127, 51);
             }
         }
+
+        /// <summary>
+        /// Loads the bush texture
+        /// </summary>
+        /// <param name="content">Content manager of game</param>
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("trees");
         }
 
+        /// <summary>
+        /// Updates the bush direction/position/bounds on screen
+        /// </summary>
+        /// <param name="gameTime">Current gametime</param>
         public void Update(GameTime gameTime)
         {
             directionTimer += gameTime.ElapsedGameTime.TotalSeconds;
@@ -102,6 +132,11 @@ namespace GameProject1
             bounds.Y = Position.Y;
         }
 
+        /// <summary>
+        /// Draws the bush on screen
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="spriteBatch"></param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if(Is_Vertical)

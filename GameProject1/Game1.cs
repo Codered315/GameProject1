@@ -9,7 +9,7 @@ namespace GameProject1
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Disc disc;
-        private Texture2D basket;
+        private DiscBasket basket;
         private Texture2D trees_tile;
 
         private Bush[] bushes;
@@ -17,8 +17,15 @@ namespace GameProject1
         private InputManager inputManager;
 
         private SpriteFont font;
+        private SpriteFont high_score_font;
 
-        private bool is_collided = false;
+        private bool is_hit_by_bush = false;
+        private bool is_in_basket = false;
+
+        private float elapsed_text_time = 0f;
+        private bool input_enabled = true;
+        private float current_round_time = 0f;
+        private float high_score_time = 10000f;
 
         public Game1()
         {
@@ -35,6 +42,7 @@ namespace GameProject1
         {
             // TODO: Add your initialization logic here
             disc = new Disc(this);
+            basket = new DiscBasket(new Vector2(1750, 540));
 
             bushes = new Bush[]
             {
@@ -56,31 +64,37 @@ namespace GameProject1
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            basket = Content.Load<Texture2D>("DiscBasket");
+            basket.LoadContent(Content);
             trees_tile = Content.Load<Texture2D>("trees");
             foreach (Bush bush in bushes) bush.LoadContent(Content);
             disc.LoadContent();
             font = Content.Load<SpriteFont>("GoudyStout");
+            high_score_font = Content.Load<SpriteFont>("Score");
         }
 
         protected override void Update(GameTime gameTime)
         {
             inputManager.Update(gameTime);
+            current_round_time += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (inputManager.Exit) Exit();
 
-            disc.Update(gameTime);
+            if(input_enabled) disc.Update(gameTime);
             disc.Color = Color.White;
 
-            is_collided = false;
             foreach (Bush bush in bushes)
             {
                 bush.Update(gameTime);
                 if(bush.Bounds.CollidesWith(disc.Bounds))
                 {
                     disc.Color = Color.Red;
-                    is_collided = true;
+                    is_hit_by_bush = true;
                 }
+            }
+            if(disc.Bounds.CollidesWith(basket.Bounds))
+            {
+                disc.Color = Color.Green;
+                is_in_basket = true;
             }
             // TODO: Add your update logic here
             base.Update(gameTime);
@@ -104,10 +118,13 @@ namespace GameProject1
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            disc.Draw(_spriteBatch);
-            foreach (Bush bush in bushes) bush.Draw(gameTime, _spriteBatch);
-            _spriteBatch.Draw(basket, new Vector2(1750, height/2), Color.White);
 
+            //Draw class objects
+            disc.Draw(_spriteBatch);
+            basket.Draw(_spriteBatch);
+            foreach (Bush bush in bushes) bush.Draw(gameTime, _spriteBatch);
+
+            #region Tree Drawing
             _spriteBatch.Draw(trees_tile, new Vector2(width / 2, height / 2), tall_green_tree, Color.White);
             _spriteBatch.Draw(trees_tile, new Vector2(200, 25), tall_green_tree, Color.White);
             _spriteBatch.Draw(trees_tile, new Vector2(700, 700), tall_green_tree, Color.White);
@@ -124,8 +141,53 @@ namespace GameProject1
             _spriteBatch.Draw(trees_tile, new Vector2(1500, 225), dead_tree, Color.White);
             _spriteBatch.Draw(trees_tile, new Vector2(75, 700), dead_tree, Color.White);
             _spriteBatch.Draw(trees_tile, new Vector2(1250, 625), normal_green_tree, Color.White);
+            _spriteBatch.DrawString(high_score_font, current_round_time.ToString("n3") + " seconds", new Vector2(2, 2), Color.Gold);
+            _spriteBatch.DrawString(high_score_font, "High Score: " + high_score_time.ToString("n3") + " seconds", new Vector2(1500, 2), Color.Gold);
+            #endregion
 
-            if (is_collided) _spriteBatch.DrawString(font, "BONK!", new Vector2(800, 500), Color.Red);
+            //Obstacle/winning logic, disables input either way and the resets player
+            if (is_hit_by_bush)
+            {
+                if (elapsed_text_time < 1.5)
+                {
+                    input_enabled = false;
+                    _spriteBatch.DrawString(font, "BONK!", new Vector2(800, 500), Color.Red);
+                    elapsed_text_time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    GamePad.SetVibration(0, 0.5f, 0.5f);
+                }
+                else
+                {
+                    elapsed_text_time = 0f;
+                    disc.Position = new Vector2(250, 250);
+                    input_enabled = true;
+                    is_hit_by_bush = false;
+                    GamePad.SetVibration(0, 0, 0);
+                    current_round_time = 0.0f;
+                }
+            }
+            if (is_in_basket)
+            {
+                if (elapsed_text_time < 1.5)
+                {
+                    input_enabled = false;
+                    _spriteBatch.DrawString(font, "CHAINS!", new Vector2(800, 500), Color.Orange);
+                    elapsed_text_time += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    GamePad.SetVibration(0, 0.5f, 0.5f);
+                    if(current_round_time < high_score_time)
+                    {
+                        high_score_time = current_round_time;
+                    }
+                }
+                else
+                {
+                    elapsed_text_time = 0f;
+                    disc.Position = new Vector2(250, 250);
+                    input_enabled = true;
+                    is_in_basket = false;
+                    GamePad.SetVibration(0, 0, 0);
+                    current_round_time = 0.0f;
+                }
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }
