@@ -1,3 +1,6 @@
 ﻿Content/trees.png - submitted by William.Thompsonj, Collaborators: pennomi, laetissima, C. Nilsson, Sharm, Johann C, Reemax (https://opengameart.org/content/lpc-plant-repack) - released under CC-BY-SA 3.0 & GPL 3.0
 [Content/DiscBasket.png, Content/DiscPizel.png] - created by Cody Murrell for this game, released under Public Domain
 [GoudyStout font (Content/GoudyStout.spritefont), Arial font (Content/Score.spritefont)] - from Windows
+[Content/background_music.mp3] - by West Wolf obtained from https://www.zapsplat.com
+[Content/bush_hit.mp3] - by ZapSplat obtained from https://www.zapsplat.com
+[Content/DG-Putt.mp3] - by RCP Tones obtained from https://rcptones.com/

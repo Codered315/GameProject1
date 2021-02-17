@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace GameProject1
 {
@@ -26,6 +28,10 @@ namespace GameProject1
         private bool input_enabled = true;
         private float current_round_time = 0f;
         private float high_score_time = 10000f;
+
+        private SoundEffect sfxBushHit;
+        private SoundEffect sfxChains;
+        private Song backgroundMusic;
 
         public Game1()
         {
@@ -70,6 +76,13 @@ namespace GameProject1
             disc.LoadContent();
             font = Content.Load<SpriteFont>("GoudyStout");
             high_score_font = Content.Load<SpriteFont>("Score");
+
+            //Music/Sound effects
+            sfxBushHit = Content.Load<SoundEffect>("bush_hit");
+            sfxChains = Content.Load<SoundEffect>("DG-Putt");
+            backgroundMusic = Content.Load<Song>("background_music");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(backgroundMusic);
         }
 
         protected override void Update(GameTime gameTime)
@@ -85,14 +98,16 @@ namespace GameProject1
             foreach (Bush bush in bushes)
             {
                 bush.Update(gameTime);
-                if(bush.Bounds.CollidesWith(disc.Bounds))
+                if(bush.Bounds.CollidesWith(disc.Bounds) && !is_hit_by_bush) //If you don't add the is_hit check the sound effect will murder your ears :)
                 {
+                    sfxBushHit.Play();
                     disc.Color = Color.Red;
                     is_hit_by_bush = true;
                 }
             }
-            if(disc.Bounds.CollidesWith(basket.Bounds))
+            if(disc.Bounds.CollidesWith(basket.Bounds) && !is_in_basket)
             {
+                sfxChains.Play();
                 disc.Color = Color.Green;
                 is_in_basket = true;
             }
