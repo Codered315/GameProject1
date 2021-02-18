@@ -14,7 +14,7 @@ namespace GameProject1
 
         private Vector2 position;
 
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(1750, 540), 128, 128);
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(1750 + 18, 540 + 14), 90, 50); //+ 18 and + 14 is to move hit box down to chains
 
         public BoundingRectangle Bounds => bounds;
 
