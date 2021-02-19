@@ -16,7 +16,15 @@ namespace GameProject1
 
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(1750 + 18, 540 + 14), 90, 50); //+ 18 and + 14 is to move hit box down to chains
 
+        private double animationTimer = 0;
+
+        private int animationFrame = 0;
+
+        /// <summary>
+        /// BoundingRectangle of the basket (just chains)
+        /// </summary>
         public BoundingRectangle Bounds => bounds;
+
 
         /// <summary>
         /// Creation of the disc basket (goal)
@@ -38,13 +46,39 @@ namespace GameProject1
         /// <summary>
         /// Draws the Disc Basket sprite on screen at the given position
         /// </summary>
-        /// <param name="spriteBatch"></param>
+        /// <param name="spriteBatch">current sprite batch</param>
         public void Draw(SpriteBatch spriteBatch)
         {
+            animationFrame = 0; //Reset animation frame to original basket
             if (texture is null) throw new InvalidOperationException("Texture must be loaded to render");
-            spriteBatch.Draw(texture, position, Color.White);
+
+            Rectangle source =new Rectangle(0, 0, 128, 128);
+
+            spriteBatch.Draw(texture, position, source, Color.White);
         }
 
+        /// <summary>
+        /// Draws the basket animation when the player has won
+        /// </summary>
+        /// <param name="gametime">gameTime object, used to determine what animation frame we are on</param>
+        /// <param name="spriteBatch">current sprite batch</param>
+        public void DrawWin(GameTime gametime, SpriteBatch spriteBatch)
+        {
+            if (texture is null) throw new InvalidOperationException("Texture must be loaded to render");
+
+            animationTimer += gametime.ElapsedGameTime.TotalSeconds;
+
+            if (animationTimer > 0.4)
+            {
+                animationFrame++;
+                if (animationFrame > 3) animationFrame = 0;
+
+                animationTimer -= 0.4;
+            }
+            Rectangle? source = animationFrame == 0 ? new Rectangle(0, 0, 128, 128) : new Rectangle(0, animationFrame * 128, 128, 128);
+
+            spriteBatch.Draw(texture, position, source, Color.White);
+        }
 
     }
 }

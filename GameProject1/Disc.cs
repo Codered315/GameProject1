@@ -52,10 +52,17 @@ namespace GameProject1
             inputManager = new InputManager();
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector2 windDir)
         {
             inputManager.Update(gameTime);
-            position += inputManager.Direction;
+            position += Vector2.Add(inputManager.Direction, windDir);
+
+            //Keeps the disc on screen
+            var viewport = game.GraphicsDevice.Viewport;
+            if (position.Y < 0) position.Y = 0;
+            if (position.Y > viewport.Height - 40) position.Y = viewport.Height - 40;
+            if (position.X < 0) position.X = 0;
+            if (position.X > viewport.Width - 59) position.X = viewport.Width - 59;
 
             bounds.X = position.X + 5;
             bounds.Y = position.Y + 25;

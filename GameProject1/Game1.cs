@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
@@ -13,6 +14,7 @@ namespace GameProject1
         private Disc disc;
         private DiscBasket basket;
         private Texture2D trees_tile;
+        private Texture2D windArrow;
 
         private Bush[] bushes;
 
@@ -33,6 +35,9 @@ namespace GameProject1
         private SoundEffect sfxChains;
         private Song backgroundMusic;
 
+        private Random rand = new Random();
+        private float windAngle;
+        private Vector2 windDirection;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -49,6 +54,10 @@ namespace GameProject1
             // TODO: Add your initialization logic here
             disc = new Disc(this);
             basket = new DiscBasket(new Vector2(1750, 540));
+
+            //Generate random wind for the start
+            windAngle = (float)(rand.NextDouble() * 2 * Math.PI);
+            windDirection = new Vector2((float)Math.Cos(windAngle), (float)Math.Sin(windAngle));
 
             bushes = new Bush[]
             {
@@ -72,6 +81,7 @@ namespace GameProject1
             // TODO: use this.Content to load your game content here
             basket.LoadContent(Content);
             trees_tile = Content.Load<Texture2D>("trees");
+            windArrow = Content.Load<Texture2D>("windArrow");
             foreach (Bush bush in bushes) bush.LoadContent(Content);
             disc.LoadContent();
             font = Content.Load<SpriteFont>("GoudyStout");
@@ -92,7 +102,7 @@ namespace GameProject1
 
             if (inputManager.Exit) Exit();
 
-            if(input_enabled) disc.Update(gameTime);
+            if(input_enabled) disc.Update(gameTime, windDirection);
             disc.Color = Color.White;
 
             foreach (Bush bush in bushes)
@@ -136,8 +146,11 @@ namespace GameProject1
 
             //Draw class objects
             disc.Draw(_spriteBatch);
-            basket.Draw(_spriteBatch);
             foreach (Bush bush in bushes) bush.Draw(gameTime, _spriteBatch);
+
+            //Had to rotate by another 90 degrees (radians) because arrow sprite was draw straight north in the sprite (rather then where the unit circle starts)
+            _spriteBatch.Draw(windArrow, new Vector2(1375, 64), null, Color.White, windAngle + (float)(Math.PI/2.0), new Vector2(16, 16), 1f, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(high_score_font, "WIND", new Vector2(1325, 120), Color.Red);
 
             #region Tree Drawing
             _spriteBatch.Draw(trees_tile, new Vector2(width / 2, height / 2), tall_green_tree, Color.White);
@@ -182,13 +195,14 @@ namespace GameProject1
             }
             if (is_in_basket)
             {
+                basket.DrawWin(gameTime, _spriteBatch);
                 if (elapsed_text_time < 1.5)
                 {
                     input_enabled = false;
                     _spriteBatch.DrawString(font, "CHAINS!", new Vector2(800, 500), Color.Orange);
                     elapsed_text_time += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     GamePad.SetVibration(0, 0.5f, 0.5f);
-                    if(current_round_time < high_score_time)
+                    if (current_round_time < high_score_time)
                     {
                         high_score_time = current_round_time;
                     }
@@ -201,7 +215,15 @@ namespace GameProject1
                     is_in_basket = false;
                     GamePad.SetVibration(0, 0, 0);
                     current_round_time = 0.0f;
+
+                    //generate a new wind each time the player wins
+                    windAngle = (float)(rand.NextDouble() * 2 * Math.PI);
+                    windDirection = new Vector2((float)Math.Cos(windAngle), (float)Math.Sin(windAngle));
                 }
+            }
+            else
+            {
+                basket.Draw(_spriteBatch); //Just draw the normal basket
             }
             _spriteBatch.End();
             base.Draw(gameTime);
