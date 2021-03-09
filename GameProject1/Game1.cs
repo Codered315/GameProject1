@@ -17,6 +17,7 @@ namespace GameProject1
         private Texture2D windArrow;
 
         private Bush[] bushes;
+        private Tree[] trees;
 
         private InputManager inputManager;
 
@@ -70,6 +71,25 @@ namespace GameProject1
                 new Bush(new Vector2(725,450), Direction.Up, true),
                 new Bush(new Vector2(1125,350), Direction.Down, true)
             };
+            trees = new Tree[]
+            {
+                 new Tree(new Vector2(960, 540), TreeType.tall_green_tree),
+                 new Tree(new Vector2(200, 25), TreeType.tall_green_tree),
+                 new Tree(new Vector2(700, 700), TreeType.tall_green_tree),
+                 new Tree(new Vector2(960, 200), TreeType.stump),
+                 new Tree(new Vector2(375, 175), TreeType.stump),
+                 new Tree(new Vector2(1150, 150), TreeType.normal_green_tree),
+                 new Tree(new Vector2(200, 400), TreeType.normal_green_tree),
+                 new Tree(new Vector2(1000, 800), TreeType.pink_tree),
+                 new Tree(new Vector2(600, 400), TreeType.pink_tree),
+                 new Tree(new Vector2(1800, 50), TreeType.pink_tree),
+                 new Tree(new Vector2(1600, 700), TreeType.normal_brown_tree),
+                 new Tree(new Vector2(150, 850), TreeType.normal_brown_tree),
+                 new Tree(new Vector2(575, 700), TreeType.stump),
+                 new Tree(new Vector2(1500, 225), TreeType.dead_tree),
+                 new Tree(new Vector2(75, 700), TreeType.dead_tree),
+                 new Tree(new Vector2(1250, 625), TreeType.normal_green_tree)
+            };
             inputManager = new InputManager();
             base.Initialize();
         }
@@ -83,6 +103,7 @@ namespace GameProject1
             trees_tile = Content.Load<Texture2D>("trees");
             windArrow = Content.Load<Texture2D>("windArrow");
             foreach (Bush bush in bushes) bush.LoadContent(Content);
+            foreach (Tree tree in trees) tree.LoadContent(Content);
             disc.LoadContent();
             font = Content.Load<SpriteFont>("GoudyStout");
             high_score_font = Content.Load<SpriteFont>("Score");
@@ -147,28 +168,13 @@ namespace GameProject1
             //Draw class objects
             disc.Draw(_spriteBatch);
             foreach (Bush bush in bushes) bush.Draw(gameTime, _spriteBatch);
+            foreach (Tree tree in trees) tree.Draw(gameTime, _spriteBatch);
 
             //Had to rotate by another 90 degrees (radians) because arrow sprite was draw straight north in the sprite (rather then where the unit circle starts)
             _spriteBatch.Draw(windArrow, new Vector2(1375, 64), null, Color.White, windAngle + (float)(Math.PI/2.0), new Vector2(16, 16), 1f, SpriteEffects.None, 1);
             _spriteBatch.DrawString(high_score_font, "WIND", new Vector2(1325, 120), Color.Red);
 
-            #region Tree Drawing
-            _spriteBatch.Draw(trees_tile, new Vector2(width / 2, height / 2), tall_green_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(200, 25), tall_green_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(700, 700), tall_green_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(960, 200), stump, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(375, 175), stump, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(1150, 150), normal_green_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(200, 400), normal_green_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(1000, 800), pink_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(600, 400), pink_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(1800, 50), pink_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(1600, 700), normal_brown_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(150, 850), normal_brown_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(575, 700), stump, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(1500, 225), dead_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(75, 700), dead_tree, Color.White);
-            _spriteBatch.Draw(trees_tile, new Vector2(1250, 625), normal_green_tree, Color.White);
+            #region High Score Drawing
             _spriteBatch.DrawString(high_score_font, current_round_time.ToString("n3") + " seconds", new Vector2(2, 2), Color.Gold);
             _spriteBatch.DrawString(high_score_font, "High Score: " + high_score_time.ToString("n3") + " seconds", new Vector2(1500, 2), Color.Gold);
             #endregion
