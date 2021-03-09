@@ -150,18 +150,6 @@ namespace GameProject1
         {
             GraphicsDevice.Clear(Color.ForestGreen);
 
-            //Get the width and height of viewport for spawning sprites
-            int width = GraphicsDevice.Viewport.Width;
-            int height = GraphicsDevice.Viewport.Height;
-
-            //These are source rectangles for each sprite on the tree sheet
-            Rectangle tall_green_tree = new Rectangle(0, 0, 64, 153);
-            Rectangle normal_green_tree = new Rectangle(127, 286, 98, 130);
-            Rectangle normal_brown_tree = new Rectangle(225, 292, 94, 117);
-            Rectangle pink_tree = new Rectangle(189, 0, 98, 131);
-            Rectangle stump = new Rectangle(355, 71, 56, 48);
-            Rectangle dead_tree = new Rectangle(4, 193, 90, 95);
-
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
