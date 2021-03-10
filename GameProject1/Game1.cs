@@ -36,7 +36,8 @@ namespace GameProject1
 
         private void AddInitialScreens()
         {
-            _screenManager.AddScreen(new Hole1(), 0);
+            _screenManager.AddScreen(new BackgroundScreen(), 0);
+            _screenManager.AddScreen(new MainMenuScreen(), 0);
         }
         protected override void Initialize()
         {

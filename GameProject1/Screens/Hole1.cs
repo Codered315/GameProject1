@@ -104,7 +104,6 @@ namespace GameProject1.Screens
                  new Tree(new Vector2(1250, 625), TreeType.normal_green_tree)
             };
             basket.LoadContent(_content);
-            trees_tile = _content.Load<Texture2D>("trees");
             windArrow = _content.Load<Texture2D>("windArrow");
             foreach (Bush bush in bushes) bush.LoadContent(_content);
             foreach (Tree tree in trees) tree.LoadContent(_content);
@@ -158,7 +157,7 @@ namespace GameProject1.Screens
             PlayerIndex player;
             if (_pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
-                //ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer); Add Pause menu
+                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
             }
             else
             {

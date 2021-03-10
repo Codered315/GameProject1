@@ -12,8 +12,6 @@ namespace GameProject1
     {
         private Texture2D texture;
 
-        private InputManager inputManager;
-
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(250 +  5,250 + 25), 53, 12);
 
         private Vector2 position = new Vector2(250, 250);
@@ -48,7 +46,6 @@ namespace GameProject1
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("DiscPixel");
-            inputManager = new InputManager();
         }
 
         public void Update(GameTime gameTime, Vector2 windDir, Vector2 direction)
