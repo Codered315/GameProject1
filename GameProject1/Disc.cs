@@ -4,13 +4,12 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using CollisionExample.Collisions;
+using Microsoft.Xna.Framework.Content;
 
 namespace GameProject1
 {
     public class Disc
     {
-        private Game game;
-
         private Texture2D texture;
 
         private InputManager inputManager;
@@ -38,31 +37,33 @@ namespace GameProject1
         /// Constructor for the Disc instance 
         /// </summary>
         /// <param name="game"></param>
-        public Disc(Game game)
+        public Disc()
         {
-            this.game = game;
+
         }
 
         /// <summary>
         /// Loads the disc content
         /// </summary>
-        public void LoadContent()
+        public void LoadContent(ContentManager content)
         {
-            texture = game.Content.Load<Texture2D>("DiscPixel");
+            texture = content.Load<Texture2D>("DiscPixel");
             inputManager = new InputManager();
         }
 
-        public void Update(GameTime gameTime, Vector2 windDir)
+        public void Update(GameTime gameTime, Vector2 windDir, Vector2 direction)
         {
-            inputManager.Update(gameTime);
-            position += Vector2.Add(inputManager.Direction, windDir);
+            //inputManager.Update(gameTime);
+            position += Vector2.Add(direction, windDir);
 
             //Keeps the disc on screen
-            var viewport = game.GraphicsDevice.Viewport;
+            var height = 1080;
+            var width = 1920;
+
             if (position.Y < 0) position.Y = 0;
-            if (position.Y > viewport.Height - 40) position.Y = viewport.Height - 40;
+            if (position.Y > height - 40) position.Y = height - 40;
             if (position.X < 0) position.X = 0;
-            if (position.X > viewport.Width - 59) position.X = viewport.Width - 59;
+            if (position.X > width - 59) position.X = width - 59;
 
             bounds.X = position.X + 5;
             bounds.Y = position.Y + 25;
