@@ -27,7 +27,7 @@ namespace GameProject1.Screens
             var back = new MenuEntry("Back");
 
             _masterVolumeMenuEntry.Selected += MasterVolumeMenuEntrySelected;
-            _musicVolumeMenuEntry.Selected += LanguageMenuEntrySelected;
+            _musicVolumeMenuEntry.Selected += MusicVolumeMenuEntrySelected;
             back.Selected += OnCancel;
 
             MenuEntries.Add(_masterVolumeMenuEntry);
@@ -50,7 +50,7 @@ namespace GameProject1.Screens
             SetMenuEntryText();
         }
 
-        private void LanguageMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void MusicVolumeMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             _currentMusicVolume = (_currentMusicVolume + 1) % VolumeChoices.Length;
             MediaPlayer.Volume = VolumeChoices[_currentMusicVolume];

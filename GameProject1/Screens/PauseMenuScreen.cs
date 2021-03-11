@@ -1,4 +1,6 @@
 ﻿using GameProject1.StateManagement;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace GameProject1.Screens
 {
@@ -6,8 +8,19 @@ namespace GameProject1.Screens
     // giving the player options to resume or quit.
     public class PauseMenuScreen : MenuScreen
     {
+        private readonly MenuEntry _masterVolumeMenuEntry;
+        private readonly MenuEntry _musicVolumeMenuEntry;
+
+        private static int _currentMasterVolume = 10;
+        private static int _currentMusicVolume = 10;
+        private static readonly float[] VolumeChoices = { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
         public PauseMenuScreen() : base("Paused")
         {
+            _masterVolumeMenuEntry = new MenuEntry(string.Empty);
+            _musicVolumeMenuEntry = new MenuEntry(string.Empty);
+
+            SetMenuEntryText();
+
             var resumeGameMenuEntry = new MenuEntry("Resume Game");
             var restartGameMenuEntry = new MenuEntry("Restart Game");
             var quitGameMenuEntry = new MenuEntry("Quit Game");
@@ -15,10 +28,14 @@ namespace GameProject1.Screens
             resumeGameMenuEntry.Selected += OnCancel;
             restartGameMenuEntry.Selected += RestartGameMenuEntrySelected;
             quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
+            _masterVolumeMenuEntry.Selected += MasterVolumeMenuEntrySelected;
+            _musicVolumeMenuEntry.Selected += MusicVolumeMenuEntrySelected;
 
             MenuEntries.Add(resumeGameMenuEntry);
             MenuEntries.Add(restartGameMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
+            MenuEntries.Add(_masterVolumeMenuEntry);
+            MenuEntries.Add(_musicVolumeMenuEntry);
         }
         private void RestartGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
@@ -50,6 +67,29 @@ namespace GameProject1.Screens
         private void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
             LoadingScreen.Load(ScreenManager, true, null, new BackgroundScreen(), new MainMenuScreen());
+        }
+
+        // Fills in the latest values for the options screen menu text.
+        private void SetMenuEntryText()
+        {
+            _masterVolumeMenuEntry.Text = $"Master Volume (SFX): {VolumeChoices[_currentMasterVolume]}";
+            _musicVolumeMenuEntry.Text = $"Background Music Volume: {VolumeChoices[_currentMusicVolume]}";
+        }
+
+        private void MasterVolumeMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            _currentMasterVolume = (_currentMasterVolume + 1) % VolumeChoices.Length;
+            SoundEffect.MasterVolume = VolumeChoices[_currentMasterVolume];
+
+            SetMenuEntryText();
+        }
+
+        private void MusicVolumeMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            _currentMusicVolume = (_currentMusicVolume + 1) % VolumeChoices.Length;
+            MediaPlayer.Volume = VolumeChoices[_currentMusicVolume];
+
+            SetMenuEntryText();
         }
     }
 }
