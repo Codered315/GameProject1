@@ -5,4 +5,4 @@
 [Content/bush_hit.mp3] - by ZapSplat obtained from https://www.zapsplat.com
 [Content/DG-Putt.mp3] - by RCP Tones obtained from https://rcptones.com/
 [Content/WindArrow.png] - created by Cody Murrell for this game, released under Public Domain
-[Content/blank.png, Content/gradient.png] - Released under the Microsoft Public/Permissive License - From Class Example
+[Content/blank.png, Content/gradient.png, Content/particle.png, Content/circle.png] - Released under the Microsoft Public/Permissive License - From Class Example
