@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using GameProject1.StateManagement;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
+using GameProject1.ParticleSystems;
 
 namespace GameProject1.Screens
 {
@@ -43,6 +44,8 @@ namespace GameProject1.Screens
         private readonly InputAction _pauseAction;
         private float _pauseAlpha;
 
+        WindParticleSystem windParticleSystem;
+        BasketParticleSystem basketParticleSystem;
 
         // <summary>
         /// Current position
@@ -111,6 +114,15 @@ namespace GameProject1.Screens
             font = _content.Load<SpriteFont>("GoudyStout");
             high_score_font = _content.Load<SpriteFont>("Score");
 
+            //Particle engine stuff
+            Rectangle source = windAngle < Math.PI ? new Rectangle(-960, -20, 1920 * 2, 10) : new Rectangle(-960, 1100, 1920 * 2, 10);
+
+            windParticleSystem = new WindParticleSystem(ScreenManager.Game, source, windDirection);
+            ScreenManager.Game.Components.Add(windParticleSystem);
+
+            basketParticleSystem = new BasketParticleSystem(ScreenManager.Game, 20);
+            ScreenManager.Game.Components.Add(basketParticleSystem);
+
             //Music/Sound effects
             sfxBushHit = _content.Load<SoundEffect>("bush_hit");
             sfxChains = _content.Load<SoundEffect>("DG-Putt");
@@ -154,6 +166,7 @@ namespace GameProject1.Screens
 
             bool gamePadDisconnected = !currentGamePadState.IsConnected && input.GamePadWasConnected[playerIndex];
 
+            float boost = 1.0f;
             PlayerIndex player;
             if (_pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
@@ -164,23 +177,26 @@ namespace GameProject1.Screens
                 #region Direction Input
                 //Get position from GamePad, modified this slightly to flip the analog stick directions to what I am use to
                 Direction = new Vector2(currentGamePadState.ThumbSticks.Left.X, currentGamePadState.ThumbSticks.Left.Y * -1) * 250 * (currentGamePadState.Triggers.Right + 1) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                //Get position from Keyboard
-                if (currentKeyboardState.IsKeyDown(Keys.Left) || currentKeyboardState.IsKeyDown(Keys.A))
+                if(currentKeyboardState.IsKeyDown(Keys.LeftShift) || currentKeyboardState.IsKeyDown(Keys.LeftShift))
                 {
-                    Direction += new Vector2(-200 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
+                    boost = 2.0f;
+                }
+                    //Get position from Keyboard
+                    if (currentKeyboardState.IsKeyDown(Keys.Left) || currentKeyboardState.IsKeyDown(Keys.A))
+                {
+                    Direction += new Vector2(-200 * (float)gameTime.ElapsedGameTime.TotalSeconds * boost, 0);
                 }
                 if (currentKeyboardState.IsKeyDown(Keys.Right) || currentKeyboardState.IsKeyDown(Keys.D))
                 {
-                    Direction += new Vector2(200 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
+                    Direction += new Vector2(200 * (float)gameTime.ElapsedGameTime.TotalSeconds * boost, 0);
                 }
                 if (currentKeyboardState.IsKeyDown(Keys.Up) || currentKeyboardState.IsKeyDown(Keys.W))
                 {
-                    Direction += new Vector2(0, -200 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    Direction += new Vector2(0, -200 * (float)gameTime.ElapsedGameTime.TotalSeconds * boost);
                 }
                 if (currentKeyboardState.IsKeyDown(Keys.Down) || currentKeyboardState.IsKeyDown(Keys.S))
                 {
-                    Direction += new Vector2(0, 200 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    Direction += new Vector2(0, 200 * (float)gameTime.ElapsedGameTime.TotalSeconds * boost);
                 }
                 #endregion
 
@@ -213,11 +229,18 @@ namespace GameProject1.Screens
         public override void Draw(GameTime gameTime)
         {
             ScreenManager.GraphicsDevice.Clear(Color.ForestGreen);
-
+            
             var _spriteBatch = ScreenManager.SpriteBatch;
+            //If it isn't shaking make it the identity matrix
+            Matrix shakeTransform = Matrix.Identity;
+
+            if (is_hit_by_bush)
+            {
+                shakeTransform = Matrix.CreateTranslation(20 * MathF.Sin(elapsed_text_time * 1000), 20 * MathF.Cos(elapsed_text_time * 1000), 0);
+            }
 
             // TODO: Add your drawing code here
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: shakeTransform);
 
             //Draw class objects
             disc.Draw(_spriteBatch);
@@ -266,6 +289,7 @@ namespace GameProject1.Screens
                     {
                         high_score_time = current_round_time;
                     }
+                    basketParticleSystem.PlaceFirework(new Vector2(basket.Bounds.X + basket.Bounds.Width/2, basket.Bounds.Y + basket.Bounds.Height / 2));
                 }
                 else
                 {
@@ -279,6 +303,10 @@ namespace GameProject1.Screens
                     //generate a new wind each time the player wins
                     windAngle = (float)(rand.NextDouble() * 2 * Math.PI);
                     windDirection = new Vector2((float)Math.Cos(windAngle), (float)Math.Sin(windAngle));
+
+                    //Update particle enginer for new wind
+                    windParticleSystem.Source = GetWindSourceRect();
+                    windParticleSystem.WindDirection = windDirection;
                 }
             }
             else
@@ -287,6 +315,34 @@ namespace GameProject1.Screens
             }
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        //This method returns a source rectangle for where wind particles should spawn 
+        //This was a fun refresher of the unit circle lol
+        private Rectangle GetWindSourceRect()
+        {
+            const double PI = Math.PI;
+
+            if(windAngle > PI / 4 && windAngle < 3 * PI / 4)
+            {
+                //wind is coming from the top
+                return new Rectangle(-960, -20, 1920 * 2, 10);
+            }
+            else if(windAngle > 3 * PI / 4 && windAngle < 5 * PI / 4)
+            {
+                //wind is coming from the left
+                return new Rectangle(1940, -540, 10, 1080 * 2);
+            }
+            else if(windAngle > 5 * PI / 4 && windAngle < 7 * PI / 4)
+            {
+                //wind is coming from the bottom
+                return new Rectangle(-960, 1100, 1920 * 2, 10);
+            }
+            else
+            {
+                //wind is coming from the right
+                return new Rectangle(-20, -540, 10, 1080 * 2);
+            }
         }
     }
 }

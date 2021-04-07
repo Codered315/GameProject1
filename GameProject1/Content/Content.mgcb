@@ -37,6 +37,18 @@
 /processorParam:Quality=Best
 /build:bush_hit.mp3
 
+#begin circle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:circle.png
+
 #begin DG-Putt.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
@@ -85,6 +97,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gradient.png
+
+#begin particle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:particle.png
 
 #begin Score.spritefont
 /importer:FontDescriptionImporter
