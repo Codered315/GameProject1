@@ -7,24 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameProject1.ParticleSystems
 {
-    public class BasketParticleSystem : ParticleSystem
+    public class ExplosionParticleSystem : ParticleSystem
     {
-        Color[] colors = new Color[]
-        {
-            Color.Fuchsia,
-            Color.Red,
-            Color.Crimson,
-            Color.CadetBlue,
-            Color.Aqua,
-            Color.HotPink,
-            Color.LimeGreen
-        };
+        Color[] colors;
 
         Color color;
 
-        public BasketParticleSystem(Game game, int maxParticles) : base(game, maxParticles * 25)
-        {
+        bool blendColors;
 
+        public ExplosionParticleSystem(Game game, int maxParticles, Color [] colors, bool blend) : base(game, maxParticles * 25)
+        {
+            this.colors = colors;
+            blendColors = blend;
         }
         protected override void InitializeConstants()
         {
@@ -32,13 +26,16 @@ namespace GameProject1.ParticleSystems
 
             minNumParticles = 20;
             maxNumParticles = 25;
-
-            blendState = BlendState.Additive;
-            DrawOrder = AdditiveBlendDrawOrder;
         }
 
         protected override void InitializeParticle(ref Particle p, Vector2 where)
         {
+            if (blendColors) //This is here rather then intialize constants because it gets ran before the constructor
+            {
+                blendState = BlendState.Additive;
+                DrawOrder = AdditiveBlendDrawOrder;
+            }
+
             var velocity = RandomHelper.NextDirection() * RandomHelper.NextFloat(40, 200);
             var lifetime = RandomHelper.NextFloat(0.5f, 1.0f);
             var acceleration = -velocity / lifetime;
@@ -60,13 +57,11 @@ namespace GameProject1.ParticleSystems
             particle.Scale = .5f + .25f * normalizedLifetime;
         }
 
-        public void PlaceFirework(Vector2 where)
+        public void PlaceExplosion(Vector2 where)
         {
             color = colors[RandomHelper.Next(colors.Length)];
 
             AddParticles(where);
         }
-
-
     }
 }

@@ -45,7 +45,8 @@ namespace GameProject1.Screens
         private float _pauseAlpha;
 
         WindParticleSystem windParticleSystem;
-        BasketParticleSystem basketParticleSystem;
+        ExplosionParticleSystem basketParticleSystem;
+        ExplosionParticleSystem bushParticleSystem;
 
         // <summary>
         /// Current position
@@ -120,8 +121,31 @@ namespace GameProject1.Screens
             windParticleSystem = new WindParticleSystem(ScreenManager.Game, source, windDirection);
             ScreenManager.Game.Components.Add(windParticleSystem);
 
-            basketParticleSystem = new BasketParticleSystem(ScreenManager.Game, 20);
+            Color[] fireworkColors = new Color[]
+            {
+                Color.Fuchsia,
+                Color.Red,
+                Color.Crimson,
+                Color.CadetBlue,
+                Color.Aqua,
+                Color.HotPink,
+                Color.LimeGreen
+            };
+
+            Color[] bushHitColors = new Color[]
+            {
+                Color.Brown,
+                Color.DarkGreen,
+                Color.Tan,
+                Color.SandyBrown,
+                Color.DarkRed,
+                Color.LightGreen
+            };
+            basketParticleSystem = new ExplosionParticleSystem(ScreenManager.Game, 20, fireworkColors, true);
             ScreenManager.Game.Components.Add(basketParticleSystem);
+
+            bushParticleSystem = new ExplosionParticleSystem(ScreenManager.Game, 20, bushHitColors, false);
+            ScreenManager.Game.Components.Add(bushParticleSystem);
 
             //Music/Sound effects
             sfxBushHit = _content.Load<SoundEffect>("bush_hit");
@@ -265,6 +289,7 @@ namespace GameProject1.Screens
                     _spriteBatch.DrawString(font, "BONK!", new Vector2(800, 500), Color.Red);
                     elapsed_text_time += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     GamePad.SetVibration(0, 0.5f, 0.5f);
+                    bushParticleSystem.PlaceExplosion(disc.Position);
                 }
                 else
                 {
@@ -289,7 +314,7 @@ namespace GameProject1.Screens
                     {
                         high_score_time = current_round_time;
                     }
-                    basketParticleSystem.PlaceFirework(new Vector2(basket.Bounds.X + basket.Bounds.Width/2, basket.Bounds.Y + basket.Bounds.Height / 2));
+                    basketParticleSystem.PlaceExplosion(new Vector2(basket.Bounds.X + basket.Bounds.Width/2, basket.Bounds.Y + basket.Bounds.Height / 2));
                 }
                 else
                 {
