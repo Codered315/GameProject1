@@ -159,6 +159,7 @@ namespace GameProject1.Screens
         public override void Deactivate()
         {
             base.Deactivate();
+            windParticleSystem.RemoveAllParticles();
         }
 
         public override void Unload()
@@ -170,7 +171,10 @@ namespace GameProject1.Screens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
             if (coveredByOtherScreen)
+            {
                 _pauseAlpha = Math.Min(_pauseAlpha + 1f / 32, 1);
+                windParticleSystem.RemoveAllParticles();
+            }
             else
                 _pauseAlpha = Math.Max(_pauseAlpha - 1f / 32, 0);
 

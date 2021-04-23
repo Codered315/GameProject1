@@ -20,6 +20,8 @@ namespace GameProject1.Screens
         private readonly InputAction _menuSelect;
         private readonly InputAction _menuCancel;
 
+        //public ScreenManager screenManager;
+
         // Gets the list of menu entries, so derived classes can add or change the menu contents.
         protected IList<MenuEntry> MenuEntries => _menuEntries;
 

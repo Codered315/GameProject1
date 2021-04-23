@@ -298,6 +298,13 @@ namespace GameProject1.ParticleSystems
             }
         }
 
+        public virtual void RemoveAllParticles()
+        {
+            for(int i = 0; i < particles.Length; i++)
+            {
+                freeParticles.Enqueue(i);
+            }
+        }
         #endregion
 
     }

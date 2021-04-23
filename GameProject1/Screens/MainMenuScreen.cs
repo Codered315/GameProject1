@@ -9,14 +9,17 @@ namespace GameProject1.Screens
         public MainMenuScreen() : base("Disc Golf Mania")
         {
             var playGameMenuEntry = new MenuEntry("Play Game");
+            var tutorialMenuEntry = new MenuEntry("Tutorial");
             var optionsMenuEntry = new MenuEntry("Options");
             var exitMenuEntry = new MenuEntry("Exit");
 
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
+            tutorialMenuEntry.Selected += TutorialMenuEntrySelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             MenuEntries.Add(playGameMenuEntry);
+            MenuEntries.Add(tutorialMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(exitMenuEntry);
         }
@@ -24,6 +27,11 @@ namespace GameProject1.Screens
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new Hole1() /*new CutSceneScreen()*/);
+        }
+
+        private void TutorialMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new TutorialMenuScreen(), e.PlayerIndex);
         }
 
         private void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
