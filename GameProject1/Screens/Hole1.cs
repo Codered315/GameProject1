@@ -158,12 +158,13 @@ namespace GameProject1.Screens
 
         public override void Deactivate()
         {
-            base.Deactivate();
             windParticleSystem.RemoveAllParticles();
+            base.Deactivate();
         }
 
         public override void Unload()
         {
+            windParticleSystem.RemoveAllParticles();
             _content.Unload();
         }
 
