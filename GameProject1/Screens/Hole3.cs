@@ -12,7 +12,7 @@ using GameProject1.ParticleSystems;
 
 namespace GameProject1.Screens
 {
-    public class Hole1 : GameScreen
+    public class Hole3 : GameScreen
     {
         private ContentManager _content;
         private SpriteFont font;
@@ -32,7 +32,8 @@ namespace GameProject1.Screens
         private float elapsed_text_time = 0f;
         private bool input_enabled = true;
         private float current_round_time = 0f;
-        private float high_score_time = 10000f;
+        private float high_score_time;
+        private float past_high_score;
 
         private SoundEffect sfxBushHit;
         private SoundEffect sfxChains;
@@ -54,8 +55,10 @@ namespace GameProject1.Screens
         /// </summary>
         public Vector2 Direction { get; private set; }
 
-        public Hole1()
+        public Hole3(float highScore)
         {
+            //Carry over high score time
+            past_high_score = highScore;
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
@@ -66,13 +69,14 @@ namespace GameProject1.Screens
 
         public override void Activate()
         {
-            if(_content == null) _content = _content = new ContentManager(ScreenManager.Game.Services, "Content");
+            if (_content == null) _content = _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             font = _content.Load<SpriteFont>("GoudyStout");
             high_score_font = _content.Load<SpriteFont>("Score");
 
             disc = new Disc();
-            basket = new DiscBasket(new Vector2(1750, 540));
+            disc.Position = new Vector2(1800, 5);
+            basket = new DiscBasket(new Vector2(940 - 700, 480 + 250));
 
             //Generate random wind for the start
             windAngle = (float)(rand.NextDouble() * 2 * Math.PI);
@@ -80,33 +84,35 @@ namespace GameProject1.Screens
 
             bushes = new Bush[]
             {
-                new Bush(new Vector2(50,0), GameProject1.Direction.Down, true),
-                new Bush(new Vector2(1200,1000), GameProject1.Direction.Right, false),
-                new Bush(new Vector2(1700,400), GameProject1.Direction.Left, false),
-                new Bush(new Vector2(350,700), GameProject1.Direction.Up, true),
-                new Bush(new Vector2(250,1000), GameProject1.Direction.Right, false),
-                new Bush(new Vector2(600,125), GameProject1.Direction.Right, false),
-                new Bush(new Vector2(725,450), GameProject1.Direction.Up, true),
-                new Bush(new Vector2(1125,350), GameProject1.Direction.Down, true)
+                new Bush(new Vector2(100, 550), GameProject1.Direction.Down, true),
+                new Bush(new Vector2(100, 550), GameProject1.Direction.Right, false),
+                new Bush(new Vector2(700, 950), GameProject1.Direction.Up, true),
+                new Bush(new Vector2(700, 950), GameProject1.Direction.Left, false),
+                new Bush(new Vector2(1600, 300), GameProject1.Direction.Down, true),
+                new Bush(new Vector2(1400, 400), GameProject1.Direction.Right, false),
+                new Bush(new Vector2(450, 400), GameProject1.Direction.Right, false),
+                new Bush(new Vector2(960, 600), GameProject1.Direction.Up, true),
+                new Bush(new Vector2(1100, 300), GameProject1.Direction.Down, true),
+                new Bush(new Vector2(320, 1040), GameProject1.Direction.Up, true)
             };
             trees = new Tree[]
             {
-                 new Tree(new Vector2(960, 540), TreeType.tall_green_tree),
-                 new Tree(new Vector2(200, 25), TreeType.tall_green_tree),
-                 new Tree(new Vector2(700, 700), TreeType.tall_green_tree),
-                 new Tree(new Vector2(960, 200), TreeType.stump),
-                 new Tree(new Vector2(375, 175), TreeType.stump),
-                 new Tree(new Vector2(1150, 150), TreeType.normal_green_tree),
-                 new Tree(new Vector2(200, 400), TreeType.normal_green_tree),
-                 new Tree(new Vector2(1000, 800), TreeType.pink_tree),
-                 new Tree(new Vector2(600, 400), TreeType.pink_tree),
-                 new Tree(new Vector2(1800, 50), TreeType.pink_tree),
-                 new Tree(new Vector2(1600, 700), TreeType.normal_brown_tree),
-                 new Tree(new Vector2(150, 850), TreeType.normal_brown_tree),
-                 new Tree(new Vector2(575, 700), TreeType.stump),
-                 new Tree(new Vector2(1500, 225), TreeType.dead_tree),
-                 new Tree(new Vector2(75, 700), TreeType.dead_tree),
-                 new Tree(new Vector2(1250, 625), TreeType.normal_green_tree)
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.pink_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.tall_green_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.tall_green_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.stump),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.stump),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.normal_green_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.normal_green_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.pink_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.pink_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.pink_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.normal_brown_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.normal_brown_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.stump),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.dead_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.dead_tree),
+                 new Tree(RandomHelper.RandomPosition(new Rectangle(0,0,1920, 1080)), TreeType.normal_green_tree)
             };
             basket.LoadContent(_content);
             windArrow = _content.Load<Texture2D>("windArrow");
@@ -181,13 +187,14 @@ namespace GameProject1.Screens
             else
                 _pauseAlpha = Math.Max(_pauseAlpha - 1f / 32, 0);
 
-            if(switch_holes)
+            if (switch_holes)
             {
-                //Remove Particles - kept remove all particles to make sure they dequed, enabled = false to stop spawning
+                //Remove Particles
                 windParticleSystem.RemoveAllParticles();
                 windParticleSystem.Enabled = false;
-                LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new Hole2(high_score_time));
+                LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new EndScreen(high_score_time + past_high_score));
             }
+
         }
 
         public override void HandleInput(GameTime gameTime, InputState input)
@@ -215,12 +222,12 @@ namespace GameProject1.Screens
                 #region Direction Input
                 //Get position from GamePad, modified this slightly to flip the analog stick directions to what I am use to
                 Direction = new Vector2(currentGamePadState.ThumbSticks.Left.X, currentGamePadState.ThumbSticks.Left.Y * -1) * 250 * (currentGamePadState.Triggers.Right + 1) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if(currentKeyboardState.IsKeyDown(Keys.LeftShift) || currentKeyboardState.IsKeyDown(Keys.LeftShift))
+                if (currentKeyboardState.IsKeyDown(Keys.LeftShift) || currentKeyboardState.IsKeyDown(Keys.LeftShift))
                 {
                     boost = 2.0f;
                 }
-                    //Get position from Keyboard
-                    if (currentKeyboardState.IsKeyDown(Keys.Left) || currentKeyboardState.IsKeyDown(Keys.A))
+                //Get position from Keyboard
+                if (currentKeyboardState.IsKeyDown(Keys.Left) || currentKeyboardState.IsKeyDown(Keys.A))
                 {
                     Direction += new Vector2(-200 * (float)gameTime.ElapsedGameTime.TotalSeconds * boost, 0);
                 }
@@ -267,9 +274,8 @@ namespace GameProject1.Screens
         public override void Draw(GameTime gameTime)
         {
             ScreenManager.GraphicsDevice.Clear(Color.ForestGreen);
-            
-            var _spriteBatch = ScreenManager.SpriteBatch;
 
+            var _spriteBatch = ScreenManager.SpriteBatch;
             //If it isn't shaking make it the identity matrix
             Matrix shakeTransform = Matrix.Identity;
 
@@ -283,7 +289,7 @@ namespace GameProject1.Screens
 
             if (current_round_time < 1.5)
             {
-                _spriteBatch.DrawString(font, "Hole 1", new Vector2(775, 500), Color.Gold);
+                _spriteBatch.DrawString(font, "Hole 3", new Vector2(775, 500), Color.Gold);
             }
 
             //Draw class objects
@@ -294,11 +300,11 @@ namespace GameProject1.Screens
             //Had to rotate by another 90 degrees (radians) because arrow sprite was draw straight north in the sprite (rather then where the unit circle starts)
             _spriteBatch.Draw(windArrow, new Vector2(1375, 64), null, Color.White, windAngle + (float)(Math.PI / 2.0), new Vector2(16, 16), 1f, SpriteEffects.None, 1);
             _spriteBatch.DrawString(high_score_font, "WIND", new Vector2(1325, 120), Color.Red);
-            _spriteBatch.DrawString(high_score_font, "Hole 1", new Vector2(1820, 1040), Color.Gold);
+            _spriteBatch.DrawString(high_score_font, "Hole 3", new Vector2(1820, 1040), Color.Gold);
 
             #region High Score Drawing
             _spriteBatch.DrawString(high_score_font, current_round_time.ToString("n3") + " seconds", new Vector2(2, 2), Color.Gold);
-            _spriteBatch.DrawString(high_score_font, "Total Time: " + high_score_time.ToString("n3") + " seconds", new Vector2(1500, 2), Color.Gold);
+            _spriteBatch.DrawString(high_score_font, "Total Time: " + past_high_score.ToString("n3") + " seconds", new Vector2(1500, 2), Color.Gold);
             #endregion
 
             //Obstacle/winning logic, disables input either way and the resets player
@@ -315,19 +321,11 @@ namespace GameProject1.Screens
                 else
                 {
                     elapsed_text_time = 0f;
-                    disc.Position = new Vector2(250, 250);
+                    disc.Position = new Vector2(1800, 5);
                     input_enabled = true;
                     is_hit_by_bush = false;
                     GamePad.SetVibration(0, 0, 0);
                     current_round_time = 0.0f;
-
-                    /* //generate a new wind each time the player wins
-                    windAngle = (float)(rand.NextDouble() * 2 * Math.PI);
-                    windDirection = new Vector2((float)Math.Cos(windAngle), (float)Math.Sin(windAngle));
-
-                    //Update particle enginer for new wind
-                    windParticleSystem.Source = GetWindSourceRect();
-                    windParticleSystem.WindDirection = windDirection; */
                 }
             }
             if (is_in_basket)
@@ -339,22 +337,26 @@ namespace GameProject1.Screens
                     _spriteBatch.DrawString(font, "CHAINS!", new Vector2(800, 500), Color.Orange);
                     elapsed_text_time += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     GamePad.SetVibration(0, 0.5f, 0.5f);
-                    if (current_round_time < high_score_time)
-                    {
-                        high_score_time = current_round_time;
-                    }
-                    basketParticleSystem.PlaceExplosion(new Vector2(basket.Bounds.X + basket.Bounds.Width/2, basket.Bounds.Y + basket.Bounds.Height / 2));
+                    high_score_time = current_round_time;
+                    basketParticleSystem.PlaceExplosion(new Vector2(basket.Bounds.X + basket.Bounds.Width / 2, basket.Bounds.Y + basket.Bounds.Height / 2));
                 }
                 else
                 {
                     elapsed_text_time = 0f;
-                    disc.Position = new Vector2(250, 250);
+                    disc.Position = new Vector2(1800, 5);
                     input_enabled = true;
                     is_in_basket = false;
                     GamePad.SetVibration(0, 0, 0);
                     current_round_time = 0.0f;
 
                     switch_holes = true;
+                    /*//generate a new wind each time the player wins
+                    windAngle = (float)(rand.NextDouble() * 2 * Math.PI);
+                    windDirection = new Vector2((float)Math.Cos(windAngle), (float)Math.Sin(windAngle));
+
+                    //Update particle enginer for new wind
+                    windParticleSystem.Source = GetWindSourceRect();
+                    windParticleSystem.WindDirection = windDirection;*/
                 }
             }
             else
@@ -371,17 +373,17 @@ namespace GameProject1.Screens
         {
             const double PI = Math.PI;
 
-            if(windAngle > PI / 4 && windAngle < 3 * PI / 4)
+            if (windAngle > PI / 4 && windAngle < 3 * PI / 4)
             {
                 //wind is coming from the top
                 return new Rectangle(-960, -20, 1920 * 2, 10);
             }
-            else if(windAngle > 3 * PI / 4 && windAngle < 5 * PI / 4)
+            else if (windAngle > 3 * PI / 4 && windAngle < 5 * PI / 4)
             {
                 //wind is coming from the left
                 return new Rectangle(1940, -540, 10, 1080 * 2);
             }
-            else if(windAngle > 5 * PI / 4 && windAngle < 7 * PI / 4)
+            else if (windAngle > 5 * PI / 4 && windAngle < 7 * PI / 4)
             {
                 //wind is coming from the bottom
                 return new Rectangle(-960, 1100, 1920 * 2, 10);

@@ -26,7 +26,7 @@ namespace GameProject1.Screens
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new Hole1() /*new CutSceneScreen()*/);
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new Hole1());
         }
 
         private void TutorialMenuEntrySelected(object sender, PlayerIndexEventArgs e)

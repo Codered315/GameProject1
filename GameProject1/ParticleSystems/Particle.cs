@@ -63,7 +63,7 @@ namespace GameProject1.ParticleSystems
         /// <summary>
         /// If this particle is still alive, and should be rendered
         /// <summary>
-        public bool Active => TimeSinceStart < Lifetime;
+        public bool Active => TimeSinceStart <= Lifetime;
 
 
 

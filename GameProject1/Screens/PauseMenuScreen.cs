@@ -66,6 +66,7 @@ namespace GameProject1.Screens
         // This uses the loading screen to transition from the game back to the main menu screen.
         private void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
+            var screens = ScreenManager.GetScreens();
             LoadingScreen.Load(ScreenManager, true, null, new BackgroundScreen(), new MainMenuScreen());
         }
 

@@ -12,7 +12,7 @@ namespace GameProject1
     {
         private Texture2D texture;
 
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(250 +  5,250 + 25), 53, 12);
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(250 + 5, 250 + 25), 53, 12);
 
         private Vector2 position = new Vector2(250, 250);
 
@@ -24,7 +24,7 @@ namespace GameProject1
         /// <summary>
         /// The bounding rectangle for the disc
         /// </summary>
-        public BoundingRectangle Bounds => bounds;
+        public BoundingRectangle Bounds { get => bounds; set => bounds = value; }
 
         /// <summary>
         /// The position of the disc

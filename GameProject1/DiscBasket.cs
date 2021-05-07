@@ -23,7 +23,7 @@ namespace GameProject1
         /// <summary>
         /// BoundingRectangle of the basket (just chains)
         /// </summary>
-        public BoundingRectangle Bounds => bounds;
+        public BoundingRectangle Bounds { get => bounds; set => bounds = value; }
 
 
         /// <summary>
@@ -33,6 +33,7 @@ namespace GameProject1
         public DiscBasket(Vector2 pos)
         {
             this.position = pos;
+            this.bounds = new BoundingRectangle(new Vector2(pos.X + 18, pos.Y + 14), 90, 50);
         }
 
         /// <summary>

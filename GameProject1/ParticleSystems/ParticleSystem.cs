@@ -302,10 +302,10 @@ namespace GameProject1.ParticleSystems
         {
             for(int i = 0; i < particles.Length; i++)
             {
-               // if(particles[i].Active)
-                //{
+               if(particles[i].Active)
+               {
                     particles[i].Lifetime = 0.0f;
-                //}
+               }
             }
         }
         #endregion
